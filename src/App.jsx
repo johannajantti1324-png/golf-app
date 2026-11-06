@@ -1,10 +1,6 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
-import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
-import SearchPage from './pages/searchPage';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import SearchPage from './pages/searchPage.jsx';
 
 function App() {
   return (
@@ -12,7 +8,7 @@ function App() {
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container">
           <a className="navbar-brand" href="/">Golf Courses</a>
-          <link to="/" className="nav-link">Golf Explorer</link>
+          <Link to="/" className="nav-link">Golf Explorer</Link>
         </div>
       </nav>
       <Routes>
