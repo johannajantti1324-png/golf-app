@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import { Link } from 'react-router-dom'
-import { searchCourses } from '../services/golfApi'
+import { fetchGolfCourses } from '../services/golfApi'
 
 export default function SearchPage() {
     const [query, setQuery] = useState('');
@@ -10,7 +10,7 @@ export default function SearchPage() {
         e.preventDefault();
         if (!query) return;
         try {
-            const results = await searchCourses(query);
+            const results = await fetchGolfCourses(query);
             setCourses(results);
         } catch (error) {
             console.error('Error searching courses:', error);
