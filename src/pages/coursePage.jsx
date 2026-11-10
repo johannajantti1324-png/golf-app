@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { fetchGolfCourseDetails } from '../services/golfApi' 
 
 export default function CoursePage() {
@@ -7,8 +7,14 @@ export default function CoursePage() {
     const [course, setCourse] = useState(null);
     useEffect(() => {
         async function loadCourseDetails() {
-            const data = await fetchGolfCourseDetails(id);
-            setCourse(data);
+            try {
+                console.log('Fetching course details for ID:', id);
+                const data = await fetchGolfCourseDetails(id);
+                console.log('Fetched course details:', data);
+                setCourse(data);
+            } catch (error) {
+                console.error('Error fetching course details:', error);
+            }
         }
         loadCourseDetails();
     }, [id]);
@@ -18,17 +24,15 @@ export default function CoursePage() {
     }
     return (
         <div className="container py-4">
-            <link to="/" className="btn btn-secondary mb-4">Back to Search</link>
-            <h1 className="mb-4">{course.course_name}</h1>
+            <Link to="/" className="btn btn-secondary mb-4">Back to Search</Link>
+            <h1 className="mb-4">{course.name}</h1>
             <p><strong>Location:</strong> {course.city}, {course.state}</p>
             <div className="card mb-4">
                 <div className="card-body">
                     <h3 className="card-title">Course Details</h3>
-                    <p><strong>Par:</strong> {course.par}</p>
-                    <p><strong>Yardage:</strong> {course.yardage}</p>
-                    <p><strong>Holes:</strong> {course.holes}</p>
-                    <p><strong>Rating:</strong> {course.rating}</p>
-                    <p><strong>Slope:</strong> {course.slope}</p>
+                    <p className="card-text"><strong>Par:</strong> {course.par}</p>
+                    <p className="card-text"><strong>Type:</strong> {course.type}</p>
+                    <p className="card-text"><strong>Phone Number:</strong> {course.phone}</p>
                 </div>
             </div>
         </div>
