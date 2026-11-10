@@ -10,12 +10,19 @@ export default function ComparePage() {
     const handleSearch = async (e) => {
         e.preventDefault();
         if (!query) return;
-        const data = await fetchGolfCourses(query);
-        setResults(data);
+        try {
+
+            const data = await fetchGolfCourses(query);
+            setResults(data || []); 
+        } catch (error) {
+            console.error("Search failed:", error);
+        }
     };
 
     const addToCompare = (course) => {
-        if (compareList.length >= 3 || compareList.find(c => c.id === course.id)) return;
+        // Lisätään, jos listalla on tilaa (max 3) eikä kenttä ole jo siellä
+        if (compareList.length >= 3) return;
+        if (compareList.find(c => c.id === course.id)) return;
         setCompareList([...compareList, course]);
     };
 
@@ -27,6 +34,7 @@ export default function ComparePage() {
         <Container className="py-4">
             <h1 className="mb-4" style={{ color: 'var(--clubhouse-green)' }}>Compare Courses</h1>
 
+            {/* Hakulomake */}
             <Form onSubmit={handleSearch} className="mb-4">
                 <div className="d-flex gap-2">
                     <Form.Control
@@ -41,6 +49,7 @@ export default function ComparePage() {
                 </div>
             </Form>
 
+            {/* Hakutulokset */}
             {results.length > 0 && (
                 <div className="mb-5">
                     <h5 className="mb-3" style={{ color: 'var(--clubhouse-green)' }}>Search Results</h5>
@@ -48,8 +57,11 @@ export default function ComparePage() {
                         {results.map(course => (
                             <ListGroup.Item key={course.id} className="d-flex justify-content-between align-items-center">
                                 <span>
-                                    {course.name || course.course_name} 
-                                    <small className="text-muted ms-2">({course.city || 'Unknown'})</small>
+                                    {/* Käytetään turvavalintaa (fallback), jos nimeä ei ole */}
+                                    {course.name || course.course_name || 'Unknown Course'} 
+                                    <small className="text-muted ms-2">
+                                        ({course.city || 'Unknown'}, {course.state || 'N/A'})
+                                    </small>
                                 </span>
                                 <Button 
                                     variant="dark" 
@@ -66,9 +78,12 @@ export default function ComparePage() {
                 </div>
             )}
 
+            {/* Vertailutaulukko */}
             <div className="d-flex align-items-center mb-3">
                 <h3 className="mb-0 me-3" style={{ color: 'var(--clubhouse-green)' }}>Selected Courses</h3>
-                <Badge bg="dark" pill style={{ backgroundColor: 'var(--clubhouse-gold)', color: 'black' }}>{compareList.length} / 3</Badge>
+                <Badge bg="dark" pill style={{ backgroundColor: 'var(--clubhouse-gold)', color: 'black' }}>
+                    {compareList.length} / 3
+                </Badge>
             </div>
 
             {compareList.length === 0 ? (
@@ -80,7 +95,7 @@ export default function ComparePage() {
                             <th>Feature</th>
                             {compareList.map(c => (
                                 <th key={c.id}>
-                                    {c.name || c.course_name}
+                                    {c.name || c.course_name || 'Unknown'}
                                     <Button variant="danger" size="sm" className="ms-2 py-0 px-2" onClick={() => removeFromCompare(c.id)}>×</Button>
                                 </th>
                             ))}

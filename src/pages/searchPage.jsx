@@ -9,18 +9,22 @@ export default function SearchPage() {
     const [error, setError] = useState('');
 
     const handleSearch = async (e) => {
-        e.preventDefault();
+         e.preventDefault();
         if (!query) return;
         setError('');
         try {
             const results = await fetchGolfCourses(query);
-            setCourses(results);
+            const validCourses = results.filter(course => {
+                return course.name && (course.city || course.state);
+            });
+
+            setCourses(validCourses); 
+            
         } catch (err) {
             console.error('Error searching courses:', err);
             setError('Failed to fetch courses.');
         }
     };
-
     return (
         <Container className="py-4">
             <h1 className="mb-4" style={{ color: 'var(--clubhouse-green)' }}>Search Golf Courses</h1>
