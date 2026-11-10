@@ -1,79 +1,111 @@
 import { useState } from 'react';
 import { fetchGolfCourses } from '../services/golfApi';
+import { Container, Form, Button, ListGroup, Table, Badge } from 'react-bootstrap';
 
 export default function ComparePage() {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
-    const [comparison, setComparison] = useState([]);
+    const [compareList, setCompareList] = useState([]);
+
     const handleSearch = async (e) => {
         e.preventDefault();
         if (!query) return;
         const data = await fetchGolfCourses(query);
         setResults(data);
     };
-    const addToComparison = (course) => {
-        if (comparison.length >=2) return; // Limit to 2 courses for comparison
-        if (comparison.find(c => c.id === course.id)) return; // Avoid duplicates
-        setComparison([...comparison, course]);
-    }
-    const removeFromComparison = (id    ) => {
-        setComparison(comparison.filter(course => course.id !== id));
+
+    const addToCompare = (course) => {
+        if (compareList.length >= 3 || compareList.find(c => c.id === course.id)) return;
+        setCompareList([...compareList, course]);
     };
+
+    const removeFromCompare = (id) => {
+        setCompareList(compareList.filter(c => c.id !== id));
+    };
+
     return (
-        <div className="container py-4">
-            <h1 className="mb-4">Compare Golf Courses</h1>
-            <form onSubmit={handleSearch}>
-                <div className="form-group">
-                    <input
+        <Container className="py-4">
+            <h1 className="mb-4" style={{ color: 'var(--clubhouse-green)' }}>Compare Courses</h1>
+
+            <Form onSubmit={handleSearch} className="mb-4">
+                <div className="d-flex gap-2">
+                    <Form.Control
                         type="text"
-                        className="form-control"
-                        placeholder="Search for golf courses..."
+                        placeholder="Search courses to compare..."
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                     />
+                    <Button variant="primary" type="submit" style={{ backgroundColor: 'var(--clubhouse-green)', borderColor: 'var(--clubhouse-green)' }}>
+                        Search
+                    </Button>
                 </div>
-                <button type="submit" className="btn btn-primary">
-                    Search
-                </button>
-            </form>
-            <div className="row mt-4">
-                <h2>Search Results</h2>
-                {results.map(course => (
-                    <li key={course.id} className="list-group-item d-flex justify-content-between align-items-center">
-                        <span>{course.name||'Unnamed Course'} - {course.city||'Unknown City'}, {course.state||'Unknown State'}</span>
-                        <button
-                            type="button"
-                            className="btn btn-outline-primary"
-                            onClick={() => addToComparison(course)}
-                            disabled={comparison.length >= 2 || comparison.some(c => c.id === course.id)}
-                        >
-                            Add to Comparison
-                        </button>
-                    </li>
-                ))}
-            </div>  
-            <h3 className="mt-4">Chosen Courses</h3>
-            <div className="row">
-                {comparison.map(course => (
-                    <div className="col-md-6 mb-3" key={course.id}>
-                        <div className="card">
-                            <div className="card-body">
-                                <h5 className="card-title">{course.name||'Unnamed Course'}</h5>
-                                <p className="card-text">
-                                    {course.city||'Unknown City'}, {course.state||'Unknown State'}
-                                </p>
-                                <button
-                                    type="button"
-                                    className="btn btn-outline-danger"
-                                    onClick={() => removeFromComparison(course.id)}
+            </Form>
+
+            {results.length > 0 && (
+                <div className="mb-5">
+                    <h5 className="mb-3" style={{ color: 'var(--clubhouse-green)' }}>Search Results</h5>
+                    <ListGroup>
+                        {results.map(course => (
+                            <ListGroup.Item key={course.id} className="d-flex justify-content-between align-items-center">
+                                <span>
+                                    {course.name || course.course_name} 
+                                    <small className="text-muted ms-2">({course.city || 'Unknown'})</small>
+                                </span>
+                                <Button 
+                                    variant="dark" 
+                                    size="sm" 
+                                    onClick={() => addToCompare(course)}
+                                    disabled={compareList.length >= 3 || compareList.find(c => c.id === course.id)}
+                                    style={{ backgroundColor: 'var(--clubhouse-green)', borderColor: 'var(--clubhouse-green)' }}
                                 >
-                                    Remove
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                ))}
+                                    + Add
+                                </Button>
+                            </ListGroup.Item>
+                        ))}
+                    </ListGroup>
+                </div>
+            )}
+
+            <div className="d-flex align-items-center mb-3">
+                <h3 className="mb-0 me-3" style={{ color: 'var(--clubhouse-green)' }}>Selected Courses</h3>
+                <Badge bg="dark" pill style={{ backgroundColor: 'var(--clubhouse-gold)', color: 'black' }}>{compareList.length} / 3</Badge>
             </div>
-        </div>
+
+            {compareList.length === 0 ? (
+                <p className="text-muted">No courses selected yet. Search and add courses above.</p>
+            ) : (
+                <Table bordered hover responsive className="bg-white shadow-sm">
+                    <thead style={{ backgroundColor: 'var(--clubhouse-green)', color: 'var(--clubhouse-cream)' }}>
+                        <tr>
+                            <th>Feature</th>
+                            {compareList.map(c => (
+                                <th key={c.id}>
+                                    {c.name || c.course_name}
+                                    <Button variant="danger" size="sm" className="ms-2 py-0 px-2" onClick={() => removeFromCompare(c.id)}>×</Button>
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>City</strong></td>
+                            {compareList.map(c => <td key={c.id}>{c.city || '—'}</td>)}
+                        </tr>
+                        <tr>
+                            <td><strong>State</strong></td>
+                            {compareList.map(c => <td key={c.id}>{c.state || '—'}</td>)}
+                        </tr>
+                        <tr>
+                            <td><strong>Par</strong></td>
+                            {compareList.map(c => <td key={c.id}>{c.par || '—'}</td>)}
+                        </tr>
+                        <tr>
+                            <td><strong>Type</strong></td>
+                            {compareList.map(c => <td key={c.id}>{c.type || '—'}</td>)}
+                        </tr>
+                    </tbody>
+                </Table>
+            )}
+        </Container>
     );
-};
+}
