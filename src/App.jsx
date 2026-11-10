@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import SearchPage from './pages/searchPage.jsx';
+import CoursePage from './pages/coursePage.jsx';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       </nav>
       <Routes>
         <Route path="/" element={<SearchPage />} />
+        <Route path="/course/:id" element={<CoursePage />} />
       </Routes>
     </BrowserRouter>
   );
