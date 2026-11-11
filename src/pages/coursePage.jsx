@@ -40,18 +40,18 @@ export default function CoursePage() {
                 </Card.Header>
                 <ListGroup variant="flush">
                     <ListGroup.Item className="d-flex justify-content-between">
-                        <strong>Par:</strong> <span>{course.par || 'N/A'}</span>
+                        <strong>Par:</strong> <span>{course.Par || course.par || 'N/A'}</span>
                     </ListGroup.Item>
                     <ListGroup.Item className="d-flex justify-content-between">
-                        <strong>Type:</strong> <span>{course.type || 'N/A'}</span>
+                        <strong>Type:</strong> <span>{course.Type || course.type || 'N/A'}</span>
                     </ListGroup.Item>
                     <ListGroup.Item className="d-flex justify-content-between">
-                        <strong>Phone:</strong> <span>{course.phone || 'N/A'}</span>
+                        <strong>Phone:</strong> <span>{course.Phone || course.phone || 'N/A'}</span>
                     </ListGroup.Item>
                     <ListGroup.Item className="d-flex justify-content-between align-items-center">
                         <strong>Website:</strong>
                         {course.website ? (
-                            <Button variant="outline-dark" size="sm" href={course.website} target="_blank" style={{ borderColor: 'var(--clubhouse-green)', color: 'var(--clubhouse-green)' }}>
+                            <Button variant="outline-dark" size="sm" href={course.website || course.Website} target="_blank" style={{ borderColor: 'var(--clubhouse-green)', color: 'var(--clubhouse-green)' }}>
                                 Visit Site
                             </Button>
                         ) : 'N/A'}
