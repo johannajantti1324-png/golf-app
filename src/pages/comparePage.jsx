@@ -81,7 +81,7 @@ export default function ComparePage() {
             {/* Vertailutaulukko */}
             <div className="d-flex align-items-center mb-3">
                 <h3 className="mb-0 me-3" style={{ color: 'var(--clubhouse-green)' }}>Selected Courses</h3>
-                <Badge bg="dark" pill style={{ backgroundColor: 'var(--clubhouse-gold)', color: 'black' }}>
+                <Badge bg="dark" pill style={{ backgroundColor: 'var(--clubhouse-gold)', color: 'white' }}>
                     {compareList.length} / 3
                 </Badge>
             </div>

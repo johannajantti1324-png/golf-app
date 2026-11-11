@@ -10,5 +10,5 @@ export async function fetchGolfCourses(query) {
 export async function fetchGolfCourseDetails(Id) {
     const response = await fetch(`${BASE_URL}/v1/courses/${Id}`);
     const data = await response.json();
-    return data.course || data;
+    return data.course || [];
 }
