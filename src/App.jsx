@@ -10,7 +10,7 @@ function App() {
       <Navbar expand="lg" className="mb-4 shadow-sm" style={{ backgroundColor: 'var(--clubhouse-green)' }}>
         <Container>
           <Navbar.Brand as={Link} to="/" style={{ color: 'var(--clubhouse-gold)', fontWeight: 'bold', fontSize: '1.5rem' }}>
-            ⛳ The Clubhouse
+            The Clubhouse
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
